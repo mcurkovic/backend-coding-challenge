@@ -16,7 +16,8 @@ var paths = {
 	},
 	build: {
 		source: "./build/source/",
-		target: "./build/dest/"
+		//target: "./build/dest/"
+		target: "./solution/src/main/resources/static/dest/"
 	},
 	copy: [
 		"fonts/*.*",
