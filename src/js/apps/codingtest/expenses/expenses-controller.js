@@ -16,8 +16,9 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 	// Update the tab sections
 	$rootScope.selectTabSection("expenses", 0);
 
-	var restExpenses = $restalchemy.init({ root: $config.apiroot, headers: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}}).at("expenses");
-	var restCalculator = $restalchemy.init({ root: $config.apiroot, headers: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}}).at("calculator");
+	//var restExpenses = $restalchemy.init({ root: $config.apiroot, headers: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}}).at("expenses");
+	var restExpenses = $restalchemy.init({ root: $config.apiroot, headers: $config.authHeader}).at("expenses");
+	var restCalculator = $restalchemy.init({ root: $config.apiroot, headers: $config.authHeader}).at("calculator");
 
 	$scope.dateOptions = {
 		changeMonth: true,
@@ -38,9 +39,14 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		$scope.newExpense.taxAmount = null
 
 		let amount = null;
-		let currency = "GBP";
+		//let currency = "GBP";
+
+		let currency = $config.defaultCurrencyCode;
+		console.log($config.defaultCurrencyCode)
+		console.log($config)
 		const amountWithCurrency = $scope.newExpense.amountWithCurrency;
 		if (amountWithCurrency) {
+			$scope.newExpense.amountWithCurrency = amountWithCurrency.toUpperCase()
 			const splittedValues = amountWithCurrency.split(" ");
 			amount = splittedValues[0]
 			if (splittedValues.length > 1) {

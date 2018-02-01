@@ -16,9 +16,11 @@ module.exports = {
 	apiroot: "http://localhost:8090/app",
 
 	// Root directory for static content
-	staticRoot: "/"
+	staticRoot: "/",
 
 	//basic Authorization
-	authHeader: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}
+	authHeader: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="},
+
+	defaultCurrencyCode: "GBP"
 
 };

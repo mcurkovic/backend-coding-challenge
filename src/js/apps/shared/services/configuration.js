@@ -5,5 +5,7 @@ var gulpEnvConfig = { /*{{gulp-env-config}}*/ };
 
 app.constant("config", {
 	apiroot: gulpEnvConfig.apiroot,
-	staticRoot: gulpEnvConfig.staticRoot
+	staticRoot: gulpEnvConfig.staticRoot,
+	authHeader: gulpEnvConfig.authHeader,
+	defaultCurrencyCode: gulpEnvConfig.defaultCurrencyCode
 });

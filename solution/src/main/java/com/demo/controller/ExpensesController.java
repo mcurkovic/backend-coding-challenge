@@ -89,7 +89,7 @@ public class ExpensesController {
 
     private String prepareCurrencyCode(final String currencyCode) {
         if (StringUtils.hasText(currencyCode)) {
-            return currencyCode;
+            return currencyCode.toUpperCase();
         }
         return defaultCurrencyCode;
     }
