@@ -9,7 +9,8 @@
 		<ul>
 			<li>
 				<label>Date</label>
-				<input  type="text" ng-blur="parseAmount()" ng-required="true" ng-model="newExpense.date" ui-date="dateOptions" placeholder="dd/mm/yyyy" />
+				<input name="date" type="text" ng-blur="parseAmount()" ng-required="true" ng-model="newExpense.date" ui-date="dateOptions" placeholder="dd/mm/yyyy" />
+				<span ng-show="expensesform.date.$touched && expensesform.date.$invalid">Invalid date. Please use dd/MM/yyyy format.</span>
 			</li>
 			<li>
 				<label>Amount</label>
