@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.demo.controller.command.CalculatorCommand;
+import com.demo.controller.command.ExpenseCommand;
 import com.demo.domain.ExchangeRates;
 import com.demo.services.ExchangeRatesManager;
 import com.demo.services.ExpensesManager;
@@ -30,7 +32,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 public class ExpensesControllerTest {
 
     public static final String BASIC_AUTH_VALUE = "Basic dXNlcjpwYXNzd29yZA==";
-    public static final String BASOC_AUTH_KEY = "Authorization";
+    public static final String BASIC_AUTH_KEY = "Authorization";
     public static final String URI_EXPENSES = "/app/expenses";
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -55,6 +57,7 @@ public class ExpensesControllerTest {
         command.setAmount(new BigDecimal("100.00"));
         command.setDate("11/01/2016");
         command.setReason("test");
+        command.setTaxAmount(new BigDecimal("16.67"));
         postObject(command, status().isOk());
     }
 
@@ -75,7 +78,23 @@ public class ExpensesControllerTest {
                 get(URI_EXPENSES)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .header(BASOC_AUTH_KEY, BASIC_AUTH_VALUE))
+                        .header(BASIC_AUTH_KEY, BASIC_AUTH_VALUE))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testCalculator() throws Exception {
+        final CalculatorCommand command = new CalculatorCommand();
+        command.setAmount(new BigDecimal("100"));
+        command.setCurrencyCode("EUR");
+        command.setDate("12/01/2018");
+
+        this.mvc.perform(
+                post("/app/calculator")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(BASIC_AUTH_KEY, BASIC_AUTH_VALUE)
+                        .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status().isOk());
     }
 
@@ -85,7 +104,7 @@ public class ExpensesControllerTest {
                 post(URI_EXPENSES)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.TEXT_PLAIN)
-                        .header(BASOC_AUTH_KEY, BASIC_AUTH_VALUE)
+                        .header(BASIC_AUTH_KEY, BASIC_AUTH_VALUE)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status);
     }

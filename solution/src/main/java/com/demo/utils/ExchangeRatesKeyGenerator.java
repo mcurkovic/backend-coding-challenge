@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExchangeRatesKeyGenerator implements KeyGenerator {
 
-    final SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+    private SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
 
     @Override
     public Object generate(Object target, Method method, Object... params) {

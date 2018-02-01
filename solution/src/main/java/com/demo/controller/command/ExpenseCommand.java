@@ -1,4 +1,4 @@
-package com.demo.controller;
+package com.demo.controller.command;
 
 import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;

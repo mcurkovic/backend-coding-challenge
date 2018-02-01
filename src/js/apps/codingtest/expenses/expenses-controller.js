@@ -17,7 +17,7 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 	$rootScope.selectTabSection("expenses", 0);
 
 	var restExpenses = $restalchemy.init({ root: $config.apiroot, headers: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}}).at("expenses");
-	//var restExpenses = $restalchemy.init({ root: "pero", headers: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}}).at("expenses");
+	var restCalculator = $restalchemy.init({ root: $config.apiroot, headers: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}}).at("calculator");
 
 	$scope.dateOptions = {
 		changeMonth: true,
@@ -30,6 +30,34 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		restExpenses.get().then(function(expenses) {
 			$scope.expenses = expenses;
 		});
+	}
+
+	$scope.parseAmount = function(){
+
+		$scope.newExpense.vat = null
+		$scope.newExpense.taxAmount = null
+
+		let amount = null;
+		let currency = "GBP";
+		const amountWithCurrency = $scope.newExpense.amountWithCurrency;
+		if (amountWithCurrency) {
+			const splittedValues = amountWithCurrency.split(" ");
+			amount = splittedValues[0]
+			if (splittedValues.length > 1) {
+				currency = splittedValues[1]
+			}
+		}
+
+		$scope.newExpense.amount = amount
+		$scope.newExpense.currencyCode = currency
+		if ($scope.newExpense.date && amount && currency) {
+
+			restCalculator.post({amount:$scope.newExpense.amount, currencyCode: currency , date: $scope.newExpense.date}).then(function(result) {
+				// Reload new expenses list
+				$scope.newExpense.vat = result.amount + " " + result.currency
+				$scope.newExpense.taxAmount = result.amount
+			});
+		}
 	}
 
 	$scope.saveExpense = function() {
