@@ -34,16 +34,13 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 	}
 
 	$scope.parseAmount = function(){
-
+		//reset fields
 		$scope.newExpense.vat = null
 		$scope.newExpense.taxAmount = null
 
+		//parse amount and currency from input value - use select box for currency?
 		let amount = null;
-		//let currency = "GBP";
-
 		let currency = $config.defaultCurrencyCode;
-		console.log($config.defaultCurrencyCode)
-		console.log($config)
 		const amountWithCurrency = $scope.newExpense.amountWithCurrency;
 		if (amountWithCurrency) {
 			$scope.newExpense.amountWithCurrency = amountWithCurrency.toUpperCase()
@@ -51,15 +48,17 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 			amount = splittedValues[0]
 			if (splittedValues.length > 1) {
 				currency = splittedValues[1]
+			} else {
+				//no currency code entered: append it to amount
+				$scope.newExpense.amountWithCurrency = $scope.newExpense.amountWithCurrency + " " + currency
 			}
 		}
-
+		//set parsed amount and currency
 		$scope.newExpense.amount = amount
 		$scope.newExpense.currencyCode = currency
 		if ($scope.newExpense.date && amount && currency) {
-
+			//calulate tax - use rest api
 			restCalculator.post({amount:$scope.newExpense.amount, currencyCode: currency , date: $scope.newExpense.date}).then(function(result) {
-				// Reload new expenses list
 				$scope.newExpense.vat = result.amount + " " + result.currency
 				$scope.newExpense.taxAmount = result.amount
 			});
