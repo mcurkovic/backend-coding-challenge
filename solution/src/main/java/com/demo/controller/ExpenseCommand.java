@@ -21,6 +21,7 @@ public class ExpenseCommand {
     @NotNull
     private String date;
 
+
     public BigDecimal getAmount() {
         return amount;
     }
