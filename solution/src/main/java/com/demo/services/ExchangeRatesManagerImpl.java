@@ -24,6 +24,7 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    //cache result - see keyGenerator class for cache key
     @Cacheable(value = "rates", keyGenerator = "exchangeRatesKeyGenerator")
     @Override
     public ExchangeRates findExchangeRates(Date date) {

@@ -1,7 +1,7 @@
 package com.demo.controller;
 
-import com.demo.controller.command.CalculatorCommand;
-import com.demo.controller.command.ExpenseCommand;
+import com.demo.controller.commands.CalculatorCommand;
+import com.demo.controller.commands.ExpenseCommand;
 import com.demo.domain.ExchangeRates;
 import com.demo.domain.Expense;
 import com.demo.domain.Money;
@@ -51,6 +51,7 @@ public class ExpensesController {
         final BigDecimal rate = fetchExchangeRate(expenseDate, currencyCode);
         final BigDecimal domesticAmount = calculateDomesticAmount(command.getAmount(), rate);
         final Money taxAmount = calculateTaxAmount(domesticAmount);
+
         Assert.isTrue(taxAmount.getAmount().compareTo(command.getTaxAmount()) == 0, "Tax amount not valid!");
 
         final Expense expense = new Expense();
@@ -71,15 +72,6 @@ public class ExpensesController {
 
     private BigDecimal calculateDomesticAmount(final BigDecimal amount, BigDecimal rate) {
         return rate.multiply(amount, new MathContext(2, RoundingMode.HALF_UP));
-    }
-
-    private Money prepareTaxAmount(final Money amount, final String date) {
-        final Date expenseDate = parseDate(date);
-        final String currencyCode = prepareCurrencyCode(amount.getCurrency());
-        final BigDecimal rate = fetchExchangeRate(expenseDate, currencyCode);
-        final BigDecimal domesticAmount = calculateDomesticAmount(amount.getAmount(), rate);
-        final Money taxAmount = calculateTaxAmount(domesticAmount);
-        return taxAmount;
     }
 
     private Money calculateTaxAmount(final BigDecimal grossAmount) {

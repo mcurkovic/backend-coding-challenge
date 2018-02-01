@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.demo.controller.command.CalculatorCommand;
-import com.demo.controller.command.ExpenseCommand;
+import com.demo.controller.commands.CalculatorCommand;
+import com.demo.controller.commands.ExpenseCommand;
 import com.demo.domain.ExchangeRates;
 import com.demo.services.ExchangeRatesManager;
 import com.demo.services.ExpensesManager;
