@@ -71,6 +71,10 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 			restExpenses.post($scope.newExpense).then(function() {
 				// Reload new expenses list
 				loadExpenses();
+				$scope.expensesform.$setPristine();
+				$scope.newExpense = {}
+				$scope.expensesform.$setUntouched();
+
 			});
 		}
 	};
