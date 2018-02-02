@@ -16,9 +16,6 @@ public class ExpenseDateValidator implements ConstraintValidator<ExpenseDate, Da
         if (value != null) {
             return value.compareTo(new Date()) <= 0;
         }
-//        context.buildConstraintViolationWithTemplate( "Expense date should not be empty" )
-//                             .addPropertyNode( "date" )
-//                             .addConstraintViolation();
         return true;
     }
 }
