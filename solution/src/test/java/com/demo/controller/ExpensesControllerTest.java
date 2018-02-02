@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.demo.controller.commands.CalculatorCommand;
-import com.demo.controller.commands.ExpenseCommand;
+import com.demo.controller.dto.CalculatorDTO;
+import com.demo.controller.dto.ExpenseDTO;
 import com.demo.domain.ExchangeRates;
 import com.demo.services.ExchangeRatesManager;
 import com.demo.services.ExpensesManager;
@@ -53,9 +53,9 @@ public class ExpensesControllerTest {
 
     @Test
     public void testSaveOkExpense() throws Exception {
-        final ExpenseCommand command = new ExpenseCommand();
+        final ExpenseDTO command = new ExpenseDTO();
         command.setAmount(new BigDecimal("100.00"));
-        command.setDate("11/01/2016");
+        command.setDate(new Date());
         command.setReason("test");
         command.setTaxAmount(new BigDecimal("16.67"));
         postObject(command, status().isOk());
@@ -66,8 +66,8 @@ public class ExpensesControllerTest {
     //test invalid command
     public void testSaveInvalidExpense() throws Exception {
 
-        final ExpenseCommand command = new ExpenseCommand();
-        command.setDate("11/01/2016");
+        final ExpenseDTO command = new ExpenseDTO();
+        command.setDate(new Date());
         command.setReason("test");
         postObject(command, status().is4xxClientError());
     }
@@ -84,10 +84,10 @@ public class ExpensesControllerTest {
 
     @Test
     public void testCalculator() throws Exception {
-        final CalculatorCommand command = new CalculatorCommand();
+        final CalculatorDTO command = new CalculatorDTO();
         command.setAmount(new BigDecimal("100"));
         command.setCurrencyCode("EUR");
-        command.setDate("12/01/2018");
+        command.setDate(new Date());
 
         this.mvc.perform(
                 post("/app/calculator")
@@ -98,7 +98,7 @@ public class ExpensesControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private void postObject(ExpenseCommand command, ResultMatcher status) throws Exception {
+    private void postObject(ExpenseDTO command, ResultMatcher status) throws Exception {
 
         this.mvc.perform(
                 post(URI_EXPENSES)

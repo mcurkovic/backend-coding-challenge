@@ -1,9 +1,14 @@
-package com.demo.controller.commands;
+package com.demo.controller.dto;
 
+import com.demo.controller.validators.ExpenseDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.validation.constraints.NotNull;
 
-public class CalculatorCommand {
+public class CalculatorDTO {
+
     @NotNull
     private BigDecimal amount;
 
@@ -11,7 +16,9 @@ public class CalculatorCommand {
     private String currencyCode;
 
     @NotNull
-    private String date;
+    @ExpenseDate
+    @JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
+    private Date date;
 
     public BigDecimal getAmount() {
         return amount;
@@ -29,11 +36,11 @@ public class CalculatorCommand {
         this.currencyCode = currencyCode;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 }

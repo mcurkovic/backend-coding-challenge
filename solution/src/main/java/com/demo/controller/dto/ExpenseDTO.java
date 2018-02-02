@@ -1,10 +1,14 @@
-package com.demo.controller.commands;
+package com.demo.controller.dto;
 
+import com.demo.controller.validators.ExpenseDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
-public class ExpenseCommand {
+public class ExpenseDTO {
 
     @NotNull
     private BigDecimal amount;
@@ -19,7 +23,9 @@ public class ExpenseCommand {
     private String reason;
 
     @NotNull
-    private String date;
+    @JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
+    @ExpenseDate
+    private Date date;
 
 
     public BigDecimal getAmount() {
@@ -46,13 +52,6 @@ public class ExpenseCommand {
         this.reason = reason;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
     public BigDecimal getDomesticCurrencyAmount() {
         return domesticCurrencyAmount;
@@ -68,5 +67,13 @@ public class ExpenseCommand {
 
     public void setTaxAmount(BigDecimal taxAmount) {
         this.taxAmount = taxAmount;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }
