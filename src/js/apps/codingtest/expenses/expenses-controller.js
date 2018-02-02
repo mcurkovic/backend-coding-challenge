@@ -17,8 +17,8 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 	$rootScope.selectTabSection("expenses", 0);
 
 	//var restExpenses = $restalchemy.init({ root: $config.apiroot, headers: {"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}}).at("expenses");
-	var restExpenses = $restalchemy.init({ root: $config.apiroot, headers: $config.authHeader}).at("expenses");
-	var restCalculator = $restalchemy.init({ root: $config.apiroot, headers: $config.authHeader}).at("calculator");
+	var restExpenses = $restalchemy.init({ root: $config.apiroot, headers: $config.authHeader }).at("expenses");
+	var restCalculator = $restalchemy.init({ root: $config.apiroot, headers: $config.authHeader }).at("calculator");
 
 	$scope.dateOptions = {
 		changeMonth: true,
@@ -31,39 +31,50 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		restExpenses.get().then(function(expenses) {
 			$scope.expenses = expenses;
 		});
-	}
+	};
 
-	$scope.parseAmount = function(){
+	$scope.parseAmount = function() {
 		//reset fields
-		$scope.newExpense.vat = null
-		$scope.newExpense.taxAmount = null
+		$scope.newExpense.vat = null;
+		$scope.newExpense.taxAmount = null;
 
 		//parse amount and currency from input value - use select box for currency?
 		let amount = null;
 		let currency = $config.defaultCurrencyCode;
 		const amountWithCurrency = $scope.newExpense.amountWithCurrency;
 		if (amountWithCurrency) {
-			$scope.newExpense.amountWithCurrency = amountWithCurrency.toUpperCase()
+			$scope.newExpense.amountWithCurrency = amountWithCurrency.toUpperCase();
 			const splittedValues = amountWithCurrency.split(" ");
-			amount = splittedValues[0]
-			if (splittedValues.length > 1) {
-				currency = splittedValues[1]
-			} else {
+			amount = splittedValues[0];
+			if (splittedValues.length > 1)
+				currency = splittedValues[1];
+			else {
 				//no currency code entered: append it to amount
-				$scope.newExpense.amountWithCurrency = $scope.newExpense.amountWithCurrency + " " + currency
+				$scope.newExpense.amountWithCurrency = $scope.newExpense.amountWithCurrency + " " + currency;
 			}
 		}
 		//set parsed amount and currency
-		$scope.newExpense.amount = amount
-		$scope.newExpense.currencyCode = currency
+		$scope.newExpense.amount = amount;
+		$scope.newExpense.currencyCode = currency;
 		if ($scope.newExpense.date && amount && currency) {
 			//calulate tax - use rest api
-			restCalculator.post({amount:$scope.newExpense.amount, currencyCode: currency , date: $scope.newExpense.date}).then(function(result) {
-				$scope.newExpense.vat = result.amount + " " + result.currency
-				$scope.newExpense.taxAmount = result.amount
-			});
+			restCalculator
+				.post({
+					amount: $scope.newExpense.amount,
+					currencyCode: currency,
+					date: $scope.newExpense.date
+				})
+				.then(function(result) {
+					$scope.newExpense.vat = result.amount + " " + result.currency;
+					$scope.newExpense.taxAmount = result.amount;
+				}).error(function(data) {
+					for (var i = 0; i < data.fieldErrors.length; i++) {
+						const item = data.fieldErrors[i];
+						$scope.expensesform.date.$setValidity("server", false, $scope.expensesform);
+					}
+				});
 		}
-	}
+	};
 
 	$scope.saveExpense = function() {
 		if ($scope.expensesform.$valid) {
@@ -72,7 +83,7 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 				// Reload new expenses list
 				loadExpenses();
 				$scope.expensesform.$setPristine();
-				$scope.newExpense = {}
+				$scope.newExpense = {};
 				$scope.expensesform.$setUntouched();
 
 			});
