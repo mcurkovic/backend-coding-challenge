@@ -17,6 +17,7 @@ import com.demo.services.ExpensesManager;
 import com.demo.services.TaxManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import org.junit.Before;
@@ -51,6 +52,8 @@ public class ExpensesControllerTest {
     @MockBean
     private TaxManager taxManager;
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
     @Before
     public void setUp() {
         final ExchangeRates mockExhangeRates = prepareMockExchangeRates();
@@ -63,6 +66,7 @@ public class ExpensesControllerTest {
     public void testSaveOkExpense() throws Exception {
         final ExpenseDTO command = new ExpenseDTO();
         command.setAmount(new BigDecimal("100.00"));
+        command.setCurrencyCode("GBP");
         command.setDate(new Date());
         command.setReason("test");
         command.setTaxAmount(new BigDecimal("16.67"));
@@ -73,6 +77,7 @@ public class ExpensesControllerTest {
     @Test
     //test invalid command
     public void testSaveInvalidExpense() throws Exception {
+
         final ExpenseDTO command = new ExpenseDTO();
         command.setDate(new Date());
         command.setReason("test");
@@ -110,7 +115,7 @@ public class ExpensesControllerTest {
         this.mvc.perform(
                 post(URI_EXPENSES)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.TEXT_PLAIN)
+                        .accept(MediaType.APPLICATION_JSON)
                         .header(BASIC_AUTH_KEY, BASIC_AUTH_VALUE)
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status);
