@@ -1,8 +1,10 @@
 package com.demo;
 
+import com.demo.controller.dto.ErrorDTO;
 import com.demo.controller.dto.ValidationErrorDTO;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -25,6 +27,7 @@ public class RestErrorHandler {
         this.messageSource = messageSource;
     }
 
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -35,10 +38,22 @@ public class RestErrorHandler {
         return processFieldErrors(fieldErrors);
     }
 
-    private ValidationErrorDTO processFieldErrors(List<FieldError> fieldErrors) {
-        ValidationErrorDTO dto = new ValidationErrorDTO();
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorDTO procesError(final Exception ex) {
+        final ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setUuid(UUID.randomUUID().toString());
+        errorDTO.setMessage(ex.getMessage());
+        return errorDTO;
+    }
 
-        for (FieldError fieldError: fieldErrors) {
+    private ValidationErrorDTO processFieldErrors(List<FieldError> fieldErrors) {
+        final ValidationErrorDTO dto = new ValidationErrorDTO();
+        dto.setMessage("validation error");
+        dto.setUuid(UUID.randomUUID().toString());
+
+        for (FieldError fieldError : fieldErrors) {
             String localizedErrorMessage = resolveLocalizedErrorMessage(fieldError);
             dto.addFieldError(fieldError.getField(), localizedErrorMessage);
         }
@@ -47,7 +62,7 @@ public class RestErrorHandler {
     }
 
     private String resolveLocalizedErrorMessage(FieldError fieldError) {
-        Locale currentLocale =  LocaleContextHolder.getLocale();
+        Locale currentLocale = LocaleContextHolder.getLocale();
         String localizedErrorMessage = messageSource.getMessage(fieldError, currentLocale);
         return localizedErrorMessage;
     }

@@ -9,6 +9,10 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Currency;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +33,18 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
     @Autowired
     private FixerExchangeRatesService fixerExchangeRatesService;
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    //private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    private DateTimeFormatter newSdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     //cache result - see keyGenerator class for cache key
-    @Cacheable(value = "rates", keyGenerator = "exchangeRatesKeyGenerator")
+    //@Cacheable(value = "rates", keyGenerator = "exchangeRatesKeyGenerator")
     @Override
     public ExchangeRates findExchangeRates(Date date) {
-        final String exchangeRateDate = simpleDateFormat.format(date);
+        final LocalDateTime localDateTime = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        final String exchangeRateDate = newSdf.format(localDateTime); //simpleDateFormat.format(date);
 
         //validate default currency code
         final String currencyCode = Currency.getInstance(defaultCurrencyCode).getCurrencyCode();
@@ -47,10 +56,10 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                return new ExchangeRates();
+                throw new ServiceException(null, "Cannot find exhange rates for requested date.");
             }
         } catch (IOException e) {
-            throw new IllegalStateException("fixer service error:", e);
+            throw new ServiceException(null, "Cannot find exhange rates. Service unavailable.");
         }
 
     }

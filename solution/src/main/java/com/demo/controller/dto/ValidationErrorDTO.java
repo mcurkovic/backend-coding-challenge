@@ -3,7 +3,7 @@ package com.demo.controller.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValidationErrorDTO {
+public class ValidationErrorDTO extends ErrorDTO{
     private List<FieldErrorDTO> fieldErrors = new ArrayList<>();
 
     public ValidationErrorDTO() {
