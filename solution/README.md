@@ -13,8 +13,8 @@ Before running the solution edit backend database connection properties with app
 ./solution/./gradlew bootRun
 
 # Solution
-All user stories are covered by solution. Simple client side validation is implemented using pattern validation (date, amount of expense) and standard required field validation. Additional full validation is done serverside.
-Security is implemented using Basic Authenitcation mechanism. Basic authenticaiton properties can be edited in ./solution/src/main/resources/applicatin.properties configuration file.
+All user stories are covered by solution. Simple client side validation is implemented using pattern validation (date, amount of expense) and standard required field validation. Additional full validation is done server-side.
+Security is implemented using Basic Authentication mechanism. Basic authentication properties can be edited in ./solution/src/main/resources/applicatin.properties configuration file.
 
 Technology stack used:
 - Spring Boot
