@@ -1,7 +1,7 @@
 # Running solution
 ## 1. Edit DB configuration
 Before running the solution edit backend database connection properties with appropriate values, see configuration file:
-*_./soultion/src/main/resources/application.properties_*. Following entries must be defined (here are example values)
+*_./solution/src/main/resources/application.properties_*. Following entries must be defined (here are example values):
 -   spring.datasource.url=jdbc:mysql://localhost:3306/test
 -   spring.datasource.username=test
 -   spring.datasource.password=password
