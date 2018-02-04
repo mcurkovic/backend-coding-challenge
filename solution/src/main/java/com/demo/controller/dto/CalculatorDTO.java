@@ -1,15 +1,18 @@
 package com.demo.controller.dto;
 
 import com.demo.controller.validators.ExpenseDate;
+import com.demo.controller.validators.MinExpenseAmount;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class CalculatorDTO {
 
     @NotNull
+    @MinExpenseAmount
     private BigDecimal amount;
 
     @NotNull

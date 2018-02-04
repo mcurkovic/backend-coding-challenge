@@ -1,6 +1,7 @@
 package com.demo.controller.dto;
 
 import com.demo.controller.validators.ExpenseDate;
+import com.demo.controller.validators.MinExpenseAmount;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.math.BigDecimal;
@@ -11,8 +12,10 @@ import org.hibernate.validator.constraints.Length;
 public class ExpenseDTO {
 
     @NotNull
+    @MinExpenseAmount
     private BigDecimal amount;
 
+    @NotNull
     private BigDecimal taxAmount;
 
     @NotNull
