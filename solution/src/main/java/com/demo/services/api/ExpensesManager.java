@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ExpensesManager {
 
-    List<Expense> findExpenses();
+    Iterable<Expense> findExpenses();
 
     Expense saveExpense(final Expense expense);
 

@@ -83,7 +83,7 @@ public class ExpensesController {
 
 
     @RequestMapping(value = "/expenses", method = RequestMethod.GET)
-    public List<Expense> findExpenses() {
+    public Iterable<Expense> findExpenses() {
         return expensesManager.findExpenses();
     }
 
