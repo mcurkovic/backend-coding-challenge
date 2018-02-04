@@ -15,6 +15,7 @@ public class ExpenseDTO {
 
     private BigDecimal taxAmount;
 
+    @NotNull
     private String currencyCode;
 
     private BigDecimal domesticCurrencyAmount;

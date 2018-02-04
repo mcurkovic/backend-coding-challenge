@@ -1,6 +1,8 @@
 package com.demo.services;
 
 import com.demo.domain.Expense;
+import com.demo.domain.Money;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ExpensesManager {
@@ -9,5 +11,5 @@ public interface ExpensesManager {
 
     void saveExpense(final Expense expense);
 
-
 }
+

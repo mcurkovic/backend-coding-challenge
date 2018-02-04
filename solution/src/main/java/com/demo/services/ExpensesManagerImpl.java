@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -19,6 +20,9 @@ public class ExpensesManagerImpl implements ExpensesManager {
 
     @Value("${defaultCurrencyCode}")
     private String defaultCurrencyCode;
+
+    @Value("${taxRatePercent}")
+    private String taxRatePercent;
 
     @Autowired
     private ExpensesRepository expensesRepository;
@@ -34,9 +38,11 @@ public class ExpensesManagerImpl implements ExpensesManager {
         return expenses;
     }
 
+    @Transactional
     @Override
     public void saveExpense(final Expense expense) {
         expensesRepository.save(expense);
-
     }
+
+
 }

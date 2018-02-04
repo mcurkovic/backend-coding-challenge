@@ -12,6 +12,7 @@ import retrofit2.Retrofit;
 
 public class ExhangeRateConverterFactory extends Converter.Factory {
 
+
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     @Override

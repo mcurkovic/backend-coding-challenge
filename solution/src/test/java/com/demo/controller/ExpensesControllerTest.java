@@ -9,9 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.demo.controller.dto.CalculatorDTO;
 import com.demo.controller.dto.ExpenseDTO;
+import com.demo.domain.ConversionResult;
 import com.demo.domain.ExchangeRates;
+import com.demo.domain.Money;
 import com.demo.services.ExchangeRatesManager;
 import com.demo.services.ExpensesManager;
+import com.demo.services.TaxManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -45,10 +48,15 @@ public class ExpensesControllerTest {
     @MockBean
     private ExpensesManager expensesManager;
 
+    @MockBean
+    private TaxManager taxManager;
+
     @Before
     public void setUp() {
         final ExchangeRates mockExhangeRates = prepareMockExchangeRates();
         given(this.exchangeRatesManager.findExchangeRates(any(Date.class))).willReturn(mockExhangeRates);
+        given(this.exchangeRatesManager.calculateDomesticAmount(any(Money.class), any(Date.class)))
+                .willReturn(new ConversionResult());
     }
 
     @Test
@@ -65,7 +73,6 @@ public class ExpensesControllerTest {
     @Test
     //test invalid command
     public void testSaveInvalidExpense() throws Exception {
-
         final ExpenseDTO command = new ExpenseDTO();
         command.setDate(new Date());
         command.setReason("test");
