@@ -56,7 +56,7 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
     }
 
     @Override
-    public ConversionResult calculateDomesticAmount(final Money amount, Date exhangeRateDate) {
+    public ConversionResult convertToDomesticAmount(final Money amount, Date exhangeRateDate) {
         final ConversionResult conversionResult = new ConversionResult();
         conversionResult.setAmount(amount);
         if (defaultCurrencyCode.equals(amount.getCurrency())){

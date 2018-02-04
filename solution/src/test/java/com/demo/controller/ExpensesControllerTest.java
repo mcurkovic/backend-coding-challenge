@@ -55,7 +55,7 @@ public class ExpensesControllerTest {
     public void setUp() {
         final ExchangeRates mockExhangeRates = prepareMockExchangeRates();
         given(this.exchangeRatesManager.findExchangeRates(any(Date.class))).willReturn(mockExhangeRates);
-        given(this.exchangeRatesManager.calculateDomesticAmount(any(Money.class), any(Date.class)))
+        given(this.exchangeRatesManager.convertToDomesticAmount(any(Money.class), any(Date.class)))
                 .willReturn(new ConversionResult());
     }
 

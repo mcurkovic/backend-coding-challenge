@@ -29,7 +29,7 @@ public class TaxAmountValidator implements ConstraintValidator<TaxAmount, Expens
     @Override
     public boolean isValid(ExpenseDTO value, ConstraintValidatorContext context) {
         final Money amount = new Money(value.getAmount(), value.getCurrencyCode());
-        final ConversionResult conversionResult = exchangeRatesManager.calculateDomesticAmount(amount, value.getDate());
+        final ConversionResult conversionResult = exchangeRatesManager.convertToDomesticAmount(amount, value.getDate());
         final Money calculateTaxAmount = taxManager.calculateTaxAmount(conversionResult.getDomesticAmount());
         return value.getTaxAmount().compareTo(calculateTaxAmount.getAmount()) == 0;
     }
