@@ -30,7 +30,6 @@ public class Expense {
             @AttributeOverride(name = "amount", column = @Column(name = "AMOUNT")),
             @AttributeOverride(name = "currency", column = @Column(name = "AMOUNT_CURRENCY_CODE"))
     })
-
     private Money amount;
 
     @Embedded
@@ -47,12 +46,16 @@ public class Expense {
             @AttributeOverride(name = "currency", column = @Column(name = "TAX_AMOUNT_CURRENCY_CODE"))
     })
     private Money taxAmount;
+
     @Column(name = "TAX_RATE")
     private BigDecimal taxRate;
+
     @Column(name = "EXCHANGE_RATE")
     private BigDecimal exchangeRate;
+
     @Column(name = "EXCHANGE_RATE_DATE")
     private Date exchangeRateDate;
+
     @Column(name = "REASON", length = 300)
     private String reason;
 
