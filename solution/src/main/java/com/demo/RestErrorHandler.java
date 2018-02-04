@@ -6,6 +6,8 @@ import com.demo.services.api.ServiceException;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice("com.demo.controller")
 public class RestErrorHandler {
+    public final static Logger logger = LoggerFactory.getLogger(RestErrorHandler.class);
 
     public static final String MESSAGE_SERVICE_UNAVAILABLE = "Service unavailable.";
     private final MessageSource messageSource;
@@ -45,8 +48,10 @@ public class RestErrorHandler {
     @ResponseBody
     public ErrorDTO procesServiceException(final ServiceException ex) {
         final ErrorDTO errorDTO = new ErrorDTO();
-        errorDTO.setUuid(UUID.randomUUID().toString());
+        final String uuid = UUID.randomUUID().toString();
+        errorDTO.setUuid(uuid);
         errorDTO.setMessage(ex.getMessage());
+        logger.error("Exception occured, uuid={}", uuid, ex);
         return errorDTO;
     }
 
@@ -55,8 +60,10 @@ public class RestErrorHandler {
     @ResponseBody
     public ErrorDTO processException(final Exception ex) {
         final ErrorDTO errorDTO = new ErrorDTO();
-        errorDTO.setUuid(UUID.randomUUID().toString());
+        final String uuid = UUID.randomUUID().toString();
+        errorDTO.setUuid(uuid);
         errorDTO.setMessage(MESSAGE_SERVICE_UNAVAILABLE);
+        logger.error("Exception occured, uuid={}", uuid, ex);
         return errorDTO;
     }
 
