@@ -1,7 +1,7 @@
 package com.demo;
 
-import com.demo.external.ExhangeRateConverterFactory;
-import com.demo.external.FixerExchangeRatesService;
+import com.demo.services.external.ExchangeRatesConverterFactory;
+import com.demo.services.external.FixerExchangeRatesService;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @SpringBootApplication
 @EnableCaching
@@ -47,7 +46,7 @@ public class DemoApplication {
     @Bean
     public Retrofit retrofit(OkHttpClient client) {
         return new Retrofit.Builder()
-                .addConverterFactory(new ExhangeRateConverterFactory())
+                .addConverterFactory(new ExchangeRatesConverterFactory())
                 .baseUrl(fixerUrl)
                 .client(client)
                 .build();

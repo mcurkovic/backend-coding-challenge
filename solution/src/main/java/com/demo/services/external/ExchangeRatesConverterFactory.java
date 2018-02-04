@@ -1,4 +1,4 @@
-package com.demo.external;
+package com.demo.services.external;
 
 
 import com.demo.domain.ExchangeRates;
@@ -10,8 +10,11 @@ import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
-public class ExhangeRateConverterFactory extends Converter.Factory {
 
+/**
+ * ConverterFactory used by retrofit to convert JSON reposnse to {@link ExchangeRates} object. Used by Retrofig client.
+ */
+public class ExchangeRatesConverterFactory extends Converter.Factory {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -26,12 +29,10 @@ public class ExhangeRateConverterFactory extends Converter.Factory {
 
         @Override
         public ExchangeRates convert(ResponseBody responseBody) throws IOException {
-
             try {
-                return JsonHelper.readJson(responseBody.string(), objectMapper);
-
+                return FixerExchangeRateParser.readJson(responseBody.string(), objectMapper);
             } catch (Exception e) {
-                throw new IOException("Failed to parse JSON", e);
+                throw new IllegalArgumentException("Failed to parse JSON", e);
             }
         }
     }

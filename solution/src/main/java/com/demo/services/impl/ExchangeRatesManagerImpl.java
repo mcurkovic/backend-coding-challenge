@@ -1,15 +1,10 @@
 package com.demo.services.impl;
 
-import com.demo.domain.ConversionResult;
 import com.demo.domain.ExchangeRates;
-import com.demo.domain.Money;
-import com.demo.external.FixerExchangeRatesService;
+import com.demo.services.external.FixerExchangeRatesService;
 import com.demo.services.api.ServiceException;
 import com.demo.services.api.ExchangeRatesManager;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;

@@ -1,4 +1,4 @@
-package com.demo.external;
+package com.demo.services.external;
 
 import com.demo.domain.ExchangeRates;
 import retrofit2.Call;

@@ -1,4 +1,4 @@
-package com.demo.external;
+package com.demo.services.external;
 
 import com.demo.domain.ExchangeRates;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,7 +12,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class JsonHelper {
+/**
+ * Helper class used by @{@link ExchangeRatesConverterFactory}
+ */
+public class FixerExchangeRateParser {
 
     public static ExchangeRates readJson(String json, ObjectMapper objectMapper) throws IOException, ParseException {
         final JsonNode jsonNode = objectMapper.readTree(json);

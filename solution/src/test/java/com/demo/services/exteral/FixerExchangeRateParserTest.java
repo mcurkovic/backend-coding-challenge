@@ -1,21 +1,22 @@
-package com.demo.external;
+package com.demo.services.exteral;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.demo.domain.ExchangeRates;
+import com.demo.services.external.FixerExchangeRateParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.text.ParseException;
 import org.junit.Test;
 import org.springframework.util.CollectionUtils;
 
-public class JsonHelperTest {
+public class FixerExchangeRateParserTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void testJson() throws IOException, ParseException {
+    public void testReadJson() throws IOException, ParseException {
         final String json = "{\n"
                 + "  \"base\": \"GBP\",\n"
                 + "  \"date\": \"2018-01-26\",\n"
@@ -54,7 +55,7 @@ public class JsonHelperTest {
                 + "  }\n"
                 + "}";
 
-        final ExchangeRates exchangeRate = JsonHelper.readJson(json, objectMapper);
+        final ExchangeRates exchangeRate = FixerExchangeRateParser.readJson(json, objectMapper);
         assertNotNull(exchangeRate);
         assertTrue(!CollectionUtils.isEmpty(exchangeRate.getRates()));
         assertTrue(exchangeRate.getRates().get("SEK") != null);
