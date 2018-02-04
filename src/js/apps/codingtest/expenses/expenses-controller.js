@@ -87,8 +87,7 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 							$scope.expensesform[item.field].$setValidity("serverError", false);
 							$scope.serverErrors[item.field] = item.message;
 						}
-					} else {
-						//show general error
+					}	else { //show general error
 						$scope.generalError = data.message;
 					}
 				});

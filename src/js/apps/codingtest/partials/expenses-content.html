@@ -44,15 +44,15 @@
 		<div class="header-row">
 			<div class="col-4">Date</div>
 			<div class="col-4 figures">Amount (inc. VAT)</div>
-			<div class="col-2 figures">VAT</div>
+			<div class="col-2 figures">VAT (GBP)</div>
 			<div class="col-15">Reason</div>
 		</div>
 		<div ng-repeat="expense in expenses" class="body-row">
 			<div class="col-4">{{expense.expenseDate | date:'dd MMM yyyy'}}</div>
 			<!-- <div class="col-4 figures">{{expense.amount | currency:"&pound;"}}</div> -->
-			<div class="col-4 figures">{{expense.amount.amount | currency:expense.amount.currency}}</div>
+			<div class="col-4 figures">{{expense.amount.amount + ' ' + expense.amount.currency}}</div>
 			<!-- <div class="col-2 figures">{{expense.vat | currency:"&pound;"}}</div> -->
-			<div class="col-2 figures">{{expense.taxAmount.amount | currency:expense.taxAmount.currency}}</div>
+			<div class="col-2 figures">{{expense.taxAmount.amount}}</div>
 			<div class="col-15">{{expense.reason}}</div>
 		</div>
 	</div>
