@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+  <changeSet author="mcurkovic" id="20180128-01">
+
+    <createTable tableName="users">
+      <column name="ID" type="INT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="USERNAME" type="varchar(100)"/>
+    </createTable>
+
+    <createTable tableName="expenses">
+      <column name="ID" type="INT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="EXPENSE_DATE" type="date"/>
+      <column name="AMOUNT" type="decimal(15,2)"/>
+      <column name="AMOUNT_CURRENCY_CODE" type="varchar(5)"/>
+      <column name="DOMESTIC_AMOUNT" type="decimal(15,2)"/>
+      <column name="DOMESTIC_AMOUNT_CURRENCY_CODE" type="varchar(5)"/>
+      <column name="TAX_AMOUNT" type="decimal(15,2)"/>
+      <column name="TAX_AMOUNT_CURRENCY_CODE" type="varchar(5)"/>
+      <column name="TAX_RATE" type="decimal(15,2)"/>
+      <column name="EXCHANGE_RATE" type="decimal(15,6)"/>
+      <column name="EXCHANGE_RATE_DATE" type="date"/>
+      <column name="REASON" type="varchar(300)"/>
+      <column name="USER_ID" type="INT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="20180128-02" author="mcurkovic">
+    <addNotNullConstraint columnName="EXPENSE_DATE" columnDataType="date" tableName="expenses"/>
+    <addNotNullConstraint columnName="AMOUNT" columnDataType="decimal(15,2)" tableName="expenses"/>
+    <addNotNullConstraint columnName="AMOUNT_CURRENCY_CODE" columnDataType="varchar(5)" tableName="expenses"/>
+    <addNotNullConstraint columnName="DOMESTIC_AMOUNT" columnDataType="decimal(15,2)" tableName="expenses"/>
+    <addNotNullConstraint columnName="DOMESTIC_AMOUNT_CURRENCY_CODE" columnDataType="varchar(5)" tableName="expenses"/>
+    <addNotNullConstraint columnName="TAX_AMOUNT" columnDataType="decimal(15,2)" tableName="expenses"/>
+    <addNotNullConstraint columnName="TAX_AMOUNT_CURRENCY_CODE" columnDataType="varchar(5)" tableName="expenses"/>
+    <addNotNullConstraint columnName="TAX_RATE" columnDataType="decimal(15,2)" tableName="expenses"/>
+  </changeSet>
+
+
+</databaseChangeLog>
