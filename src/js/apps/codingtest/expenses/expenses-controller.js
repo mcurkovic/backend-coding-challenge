@@ -26,6 +26,8 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		dateFormat: "dd/mm/yy"
 	};
 
+	$scope.serverErrors = {}
+
 	var loadExpenses = function() {
 		// Retrieve a list of expenses via REST
 		restExpenses.get().then(function(expenses) {
@@ -38,39 +40,49 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		$scope.newExpense.vat = null;
 		$scope.newExpense.taxAmount = null;
 
-		//parse amount and currency from input value - use select box for currency?
+		//set default values
 		let amount = null;
 		let currency = $config.defaultCurrencyCode;
+
+		//parse amount and currency from input value - use select box for currency?
 		const amountWithCurrency = $scope.newExpense.amountWithCurrency;
 		if (amountWithCurrency) {
 			$scope.newExpense.amountWithCurrency = amountWithCurrency.toUpperCase();
 			const splittedValues = amountWithCurrency.split(" ");
 			amount = splittedValues[0];
+			//find enterd currency
 			if (splittedValues.length > 1)
 				currency = splittedValues[1];
-			else {
-				//no currency code entered: append it to amount
+			else { //no currency code entered: append it to amount
 				$scope.newExpense.amountWithCurrency = $scope.newExpense.amountWithCurrency + " " + currency;
 			}
 		}
 		//set parsed amount and currency
 		$scope.newExpense.amount = amount;
 		$scope.newExpense.currencyCode = currency;
+
+		//calculate tax serverside
 		if ($scope.newExpense.date && amount && currency) {
-			//calulate tax - use rest api
-			restCalculator
-				.post({
+			restCalculator.post({
 					amount: $scope.newExpense.amount,
 					currencyCode: currency,
 					date: $scope.newExpense.date
-				})
-				.then(function(result) {
+				}).then(function(result) {
+					//reset form validations
+					$scope.expensesform.$setUntouched();
+					//set calculated VAT
 					$scope.newExpense.vat = result.amount + " " + result.currency;
 					$scope.newExpense.taxAmount = result.amount;
 				}).error(function(data) {
-					for (var i = 0; i < data.fieldErrors.length; i++) {
-						const item = data.fieldErrors[i];
-						$scope.expensesform.date.$setValidity("server", false, $scope.expensesform);
+					//reset previous tax amount
+					$scope.newExpense.vat = null;
+					//set serverside validation error if any
+					if (data && data.fieldErrors != null && data.fieldErrors.length > 0){
+						for (var i = 0; i < data.fieldErrors.length; i++) {
+							const item = data.fieldErrors[i];
+							$scope.expensesform[item.field].$setValidity("serverError", false);
+							$scope.serverErrors[item.field]=item.message
+						}
 					}
 				});
 		}

@@ -10,12 +10,18 @@
 			<li>
 				<label>Date</label>
 				<input name="date" ng-pattern="/(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/" type="text" ng-blur="parseAmount()" ng-required="true" ng-model="newExpense.date" ui-date="dateOptions" placeholder="dd/mm/yyyy" />
-				<span ng-show="expensesform.date.$touched && expensesform.date.$invalid">Invalid date. Please use dd/mm/yyyy format.</span>
+				<span ng-show="expensesform.date.$touched && expensesform.date.$invalid"></span>
+
+				<span style="color:red" ng-show="expensesform.date.$touched && expensesform.date.$invalid">
+				  <span ng-show="expensesform.date.$error.pattern">Invalid date. Please use dd/mm/yyyy format.</span>
+				  <span ng-show="expensesform.date.$error.serverError">{{serverErrors.date}}</span>
+				</span>
+
 			</li>
 			<li>
 				<label>Amount</label>
 				<input  name="amountWithCurrency" ng-pattern="/^(\d{1,9})(\.\d{1,2})?(\040(AUD|CAD|CHF|CYP|CZK|DKK|EEK|GBP|EUR|HKD|HUF|ISK|JPY|KRW|LTL|LVL|MTL|NOK|NZD|PLN|ROL|SEK|SGD|SIT|SKK|TRL|USD|ZAR))?$/" ng-blur="parseAmount()" type="text" ng-required="true" ng-model="newExpense.amountWithCurrency" placeholder="00.00 GBP" />
-				<span ng-show="expensesform.amountWithCurrency.$touched && expensesform.amountWithCurrency.$invalid">Invalid amount. Please use format: 00.00 (ISO currency code)</span>
+				<span style="color:red" ng-show="expensesform.amountWithCurrency.$touched && expensesform.amountWithCurrency.$invalid">Invalid amount. Please use format: 00.00 (ISO currency code)</span>
 			</li>
 			<li>
 				<label>VAT</label>
