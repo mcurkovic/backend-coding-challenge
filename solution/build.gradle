@@ -31,8 +31,8 @@ dependencies {
     compile('org.liquibase:liquibase-core')
     compile('com.squareup.okhttp3:okhttp:3.9.1')
     compile('com.squareup.retrofit2:retrofit:2.3.0')
-    // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-jackson
-    compile group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.3.0'
+    compile('org.apache.commons:commons-lang3:3.7')
+    compile('com.squareup.retrofit2:converter-jackson:2.3.0')
 
     runtime('mysql:mysql-connector-java')
 

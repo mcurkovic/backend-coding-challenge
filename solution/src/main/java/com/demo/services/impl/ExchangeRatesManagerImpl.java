@@ -1,15 +1,13 @@
 package com.demo.services.impl;
 
 import com.demo.domain.ExchangeRates;
-import com.demo.services.external.FixerExchangeRatesService;
-import com.demo.services.api.ServiceException;
 import com.demo.services.api.ExchangeRatesManager;
+import com.demo.services.api.ServiceException;
+import com.demo.services.external.FixerExchangeRatesService;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Currency;
 import java.util.Date;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +21,7 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
 
     private final String defaultCurrencyCode;
 
-    private final DateTimeFormatter dateFormatter;
+    private final FastDateFormat dateFormatter;
 
     private final FixerExchangeRatesService fixerExchangeRatesService;
 
@@ -37,14 +35,14 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
 
         //validate configured default currency code
         try {
-            Currency.getInstance(defaultCurrencyCode).getCurrencyCode();
+            Assert.notNull(Currency.getInstance(defaultCurrencyCode).getCurrencyCode(), "Invalid currency code");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Check application.properties defaultCurrencyCode. Unrecognized currency code=" + defaultCurrencyCode);
         }
 
         this.defaultCurrencyCode = defaultCurrencyCode;
         this.fixerExchangeRatesService = fixerExchangeRatesService;
-        this.dateFormatter = DateTimeFormatter.ofPattern(fixerDateFormat);
+        this.dateFormatter = FastDateFormat.getInstance(fixerDateFormat);
     }
 
     //cache result - see keyGenerator class for cache key/ for demo purpososes used spring boot generic caching
@@ -52,11 +50,7 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
     @Override
     public ExchangeRates findExchangeRates(final Date date) {
         Assert.notNull(date, "Date param must not be null!");
-
-        final LocalDateTime localDateTime = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        final String exchangeRateDate = dateFormatter.format(localDateTime);
+        final String exchangeRateDate = dateFormatter.format(date);
 
         //validate default currency code
         final Call<ExchangeRates> call = fixerExchangeRatesService.findExchangeRates(exchangeRateDate, defaultCurrencyCode);
@@ -72,36 +66,5 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
             throw new ServiceException(errMsg);
         }
     }
-
-    /*@Override
-    public ConversionResult convertToDomesticAmount(final Money amount, Date exhangeRateDate) {
-        final ConversionResult conversionResult = new ConversionResult();
-        conversionResult.setAmount(amount);
-
-        if (defaultCurrencyCode.equals(amount.getCurrency())) {
-            conversionResult.setDomesticAmount(amount);
-            return conversionResult;
-        }
-
-        final BigDecimal rate = fetchExchangeRate(exhangeRateDate, amount.getCurrency());
-        final BigDecimal calculatedAmount = rate.multiply(amount.getAmount(), new MathContext(2, RoundingMode.HALF_UP));
-        conversionResult.setDomesticAmount(new Money(calculatedAmount, defaultCurrencyCode));
-        conversionResult.setRate(rate);
-
-        return conversionResult;
-    }
-*/
-    /*private BigDecimal fetchExchangeRate(final Date date, final String currencyCode) {
-        if (defaultCurrencyCode.equals(currencyCode)) {
-            throw new IllegalArgumentException("Currency code equals domestic currency code");
-        }
-        final ExchangeRates rates = findExchangeRates(date);
-        if (rates.getRates() == null || rates.getRates().containsKey(currencyCode) == false){
-            throw new ServiceException("Exchange rate not available");
-        }
-        final BigDecimal rate = rates.getRates().get(currencyCode);
-        return rate;
-    }*/
-
 }
 

@@ -11,7 +11,6 @@ import com.demo.TestUtils;
 import com.demo.controller.dto.CalculatorDTO;
 import com.demo.controller.dto.ExpenseDTO;
 import com.demo.domain.ConversionResult;
-import com.demo.domain.ExchangeRates;
 import com.demo.domain.Money;
 import com.demo.services.api.ConversionManager;
 import com.demo.services.api.ExchangeRatesManager;
@@ -19,9 +18,8 @@ import com.demo.services.api.ExpensesManager;
 import com.demo.services.api.TaxManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,9 +35,9 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @WebMvcTest(ExpensesController.class)
 public class ExpensesControllerTest {
 
-    public static final String BASIC_AUTH_VALUE = "Basic dXNlcjpwYXNzd29yZA==";
-    public static final String BASIC_AUTH_KEY = "Authorization";
-    public static final String URI_EXPENSES = "/app/expenses";
+    private static final String BASIC_AUTH_VALUE = "Basic dXNlcjpwYXNzd29yZA==";
+    private static final String BASIC_AUTH_KEY = "Authorization";
+    private static final String URI_EXPENSES = "/app/expenses";
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
@@ -57,7 +55,7 @@ public class ExpensesControllerTest {
     @MockBean
     private TaxManager taxManager;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    private FastDateFormat sdf = FastDateFormat.getInstance("dd/MM/yyyy");
 
     @Before
     public void setUp() {

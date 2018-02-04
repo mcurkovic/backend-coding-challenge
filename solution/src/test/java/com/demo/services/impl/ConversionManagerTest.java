@@ -11,7 +11,7 @@ import com.demo.services.api.ServiceException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,26 +25,22 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ConversionManagerTest {
+    private static final String OK_DATE = "2018-01-01";
+    private static final String NOT_OK_DATE = "1900-01-01";
 
-
-    public static final String OK_DATE = "2018-01-01";
-    public static final String NOT_OK_DATE = "1900-01-01";
     @MockBean
     private ExchangeRatesManager exchangeRatesManager;
 
     @Autowired
     private ConversionManager conversionManager;
 
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private final FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd");
 
     @Before
     public void setUp() throws ParseException, IOException {
-
-        final String okDate = OK_DATE;
-        final String notOkDate = NOT_OK_DATE;
-        given(this.exchangeRatesManager.findExchangeRates(Matchers.eq(sdf.parse(okDate))))
+        given(this.exchangeRatesManager.findExchangeRates(Matchers.eq(sdf.parse(OK_DATE))))
                 .willReturn(TestUtils.prepareMockExchangeRates());
-        given(this.exchangeRatesManager.findExchangeRates(Matchers.eq(sdf.parse(notOkDate)))).willThrow(
+        given(this.exchangeRatesManager.findExchangeRates(Matchers.eq(sdf.parse(NOT_OK_DATE)))).willThrow(
                 ServiceException.class);
     }
 

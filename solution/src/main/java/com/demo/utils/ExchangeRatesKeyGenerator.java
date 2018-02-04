@@ -1,8 +1,8 @@
 package com.demo.utils;
 
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExchangeRatesKeyGenerator implements KeyGenerator {
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+    private FastDateFormat sdf = FastDateFormat.getInstance("ddMMyyyy");
 
     @Override
     public Object generate(Object target, Method method, Object... params) {
