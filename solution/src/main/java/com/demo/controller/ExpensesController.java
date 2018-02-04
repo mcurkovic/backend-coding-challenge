@@ -22,10 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/app")
 public class ExpensesController {
-
-
-    //taxRate percent configured in application.properties, e.g. 20
-    private final String taxRatePercent;
+    //see application.properties taxRatePercent
+    private final BigDecimal taxRatePercent;
 
     private final ExpensesManager expensesManager;
 
@@ -38,7 +36,14 @@ public class ExpensesController {
     @Autowired
     public ExpensesController(@Value("${taxRatePercent}") String taxRatePercent, ExpensesManager expensesManager,
             ExchangeRatesManager exchangeRatesManager, TaxManager taxManager, ConversionManager conversionManager) {
-        this.taxRatePercent = taxRatePercent;
+
+        try {
+            final BigDecimal taxRate = new BigDecimal(taxRatePercent);
+            this.taxRatePercent = taxRate;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("taxRatePercent misconfigured. Use format 00.00 e.g. 20.00");
+        }
+
         this.expensesManager = expensesManager;
         this.exchangeRatesManager = exchangeRatesManager;
         this.taxManager = taxManager;
@@ -52,23 +57,28 @@ public class ExpensesController {
         final Money amount = new Money(command.getAmount(), command.getCurrencyCode());
         final ConversionResult conversionResult = conversionManager.convertToDomesticAmount(amount, command.getDate());
         final Money taxAmount = taxManager.calculateTaxAmount(conversionResult.getDomesticAmount());
+        final Expense expense = convertToExpense(command, amount, conversionResult, taxAmount);
+        final Expense savedExpense = expensesManager.saveExpense(expense);
 
-        //prepare expense entityConversionManager conversionManager
+        //return populated command
+        return command;
+    }
+
+    private Expense convertToExpense(ExpenseDTO command, Money amount,
+            ConversionResult conversionResult, Money taxAmount)
+    {
+        //map dto to entity - usually use library such as Orika Mapper, for demo in controller.
         final Expense expense = new Expense();
         expense.setDomesticAmount(conversionResult.getDomesticAmount());
         expense.setAmount(amount);
         expense.setTaxAmount(taxAmount);
         expense.setExpenseDate(command.getDate());
         expense.setReason(command.getReason());
-        expense.setTaxRate(new BigDecimal(taxRatePercent));
+        expense.setTaxRate(taxRatePercent);
         expense.setExchangeRate(conversionResult.getRate());
         expense.setExchangeRateDate(command.getDate());
         expense.setUserId(Long.valueOf(1));
-
-        expensesManager.saveExpense(expense);
-
-        //return populated command
-        return command;
+        return expense;
     }
 
 

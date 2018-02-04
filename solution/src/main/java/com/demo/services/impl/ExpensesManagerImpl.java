@@ -38,8 +38,8 @@ public class ExpensesManagerImpl implements ExpensesManager {
 
     @Transactional
     @Override
-    public void saveExpense(final Expense expense) {
-        expensesRepository.save(expense);
+    public Expense saveExpense(final Expense expense) {
+        return expensesRepository.save(expense);
     }
 
 
