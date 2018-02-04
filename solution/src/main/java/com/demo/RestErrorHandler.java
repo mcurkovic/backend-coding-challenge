@@ -2,6 +2,7 @@ package com.demo;
 
 import com.demo.controller.dto.ErrorDTO;
 import com.demo.controller.dto.ValidationErrorDTO;
+import com.demo.services.api.ServiceException;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice("com.demo.controller")
 public class RestErrorHandler {
 
+    public static final String MESSAGE_SERVICE_UNAVAILABLE = "Service unavailable.";
     private final MessageSource messageSource;
 
     @Autowired
@@ -38,13 +40,23 @@ public class RestErrorHandler {
         return processFieldErrors(fieldErrors);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(ServiceException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public ErrorDTO procesError(final Exception ex) {
+    public ErrorDTO procesServiceException(final ServiceException ex) {
         final ErrorDTO errorDTO = new ErrorDTO();
         errorDTO.setUuid(UUID.randomUUID().toString());
         errorDTO.setMessage(ex.getMessage());
+        return errorDTO;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorDTO processException(final Exception ex) {
+        final ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setUuid(UUID.randomUUID().toString());
+        errorDTO.setMessage(MESSAGE_SERVICE_UNAVAILABLE);
         return errorDTO;
     }
 

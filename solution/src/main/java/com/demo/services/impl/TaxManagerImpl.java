@@ -27,7 +27,7 @@ public class TaxManagerImpl implements TaxManager {
 
     private BigDecimal calculateVAT(final BigDecimal grossAmount, BigDecimal taxRate) {
         final BigDecimal tax = taxRate.divide(new BigDecimal("100.00")).add(new BigDecimal("1.00"));
-        final BigDecimal netAmount = grossAmount.divide(tax, 2, BigDecimal.ROUND_HALF_EVEN);
+        final BigDecimal netAmount = grossAmount.divide(tax, 2, BigDecimal.ROUND_HALF_UP);
         final BigDecimal vatAmount = grossAmount.subtract(netAmount);
         return vatAmount;
     }

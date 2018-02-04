@@ -52,7 +52,7 @@ public class ExchangeRatesManagerImpl implements ExchangeRatesManager {
         this.dateFormatter = DateTimeFormatter.ofPattern(fixerDateFormat);
     }
 
-    //cache result - see keyGenerator class for cache key
+    //cache result - see keyGenerator class for cache key/ for demo purpososes used spring boot generic caching
     @Cacheable(value = "rates", keyGenerator = "exchangeRatesKeyGenerator")
     @Override
     public ExchangeRates findExchangeRates(final Date date) {
