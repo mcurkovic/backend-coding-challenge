@@ -26,6 +26,7 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		dateFormat: "dd/mm/yy"
 	};
 
+	$scope.generalError = null;
 	$scope.serverErrors = {};
 
 	var loadExpenses = function() {
@@ -71,12 +72,14 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 				}).then(function(result) {
 					//reset custom form validations
 					$scope.expensesform.date.$setValidity("serverError", true);
+					$scope.generalError = null;
 					//set calculated VAT
 					$scope.newExpense.vat = result.amount + " " + result.currency;
 					$scope.newExpense.taxAmount = result.amount;
 				}).error(function(data) {
 					//reset previous tax amount
 					$scope.newExpense.vat = null;
+
 					//set serverside validation error if any
 					if (data && data.fieldErrors != null && data.fieldErrors.length > 0) {
 						for (var i = 0; i < data.fieldErrors.length; i++) {
@@ -84,6 +87,9 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 							$scope.expensesform[item.field].$setValidity("serverError", false);
 							$scope.serverErrors[item.field] = item.message;
 						}
+					} else {
+						//show general error
+						$scope.generalError = data.message;
 					}
 				});
 		}

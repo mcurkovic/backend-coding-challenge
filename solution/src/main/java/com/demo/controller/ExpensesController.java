@@ -5,9 +5,10 @@ import com.demo.controller.dto.ExpenseDTO;
 import com.demo.domain.ConversionResult;
 import com.demo.domain.Expense;
 import com.demo.domain.Money;
-import com.demo.services.ExchangeRatesManager;
-import com.demo.services.ExpensesManager;
-import com.demo.services.TaxManager;
+import com.demo.services.api.ConversionManager;
+import com.demo.services.api.ExchangeRatesManager;
+import com.demo.services.api.ExpensesManager;
+import com.demo.services.api.TaxManager;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.validation.Valid;
@@ -24,25 +25,24 @@ public class ExpensesController {
 
 
     //taxRate percent configured in application.properties, e.g. 20
-   // @Value("${taxRatePercent}")
     private final String taxRatePercent;
 
-  //  @Autowired
     private final ExpensesManager expensesManager;
 
-   // @Autowired
     private final ExchangeRatesManager exchangeRatesManager;
 
-   // @Autowired
     private final TaxManager taxManager;
 
+    private final ConversionManager conversionManager;
+
     @Autowired
-    public ExpensesController(@Value("${taxRatePercent}")String taxRatePercent, ExpensesManager expensesManager,
-            ExchangeRatesManager exchangeRatesManager, TaxManager taxManager) {
+    public ExpensesController(@Value("${taxRatePercent}") String taxRatePercent, ExpensesManager expensesManager,
+            ExchangeRatesManager exchangeRatesManager, TaxManager taxManager, ConversionManager conversionManager) {
         this.taxRatePercent = taxRatePercent;
         this.expensesManager = expensesManager;
         this.exchangeRatesManager = exchangeRatesManager;
         this.taxManager = taxManager;
+        this.conversionManager = conversionManager;
     }
 
     @RequestMapping(value = "/expenses", method = RequestMethod.POST)
@@ -50,10 +50,10 @@ public class ExpensesController {
 
         //calculate domestic amount and tax
         final Money amount = new Money(command.getAmount(), command.getCurrencyCode());
-        final ConversionResult conversionResult = exchangeRatesManager.convertToDomesticAmount(amount, command.getDate());
+        final ConversionResult conversionResult = conversionManager.convertToDomesticAmount(amount, command.getDate());
         final Money taxAmount = taxManager.calculateTaxAmount(conversionResult.getDomesticAmount());
 
-        //prepare expense entity
+        //prepare expense entityConversionManager conversionManager
         final Expense expense = new Expense();
         expense.setDomesticAmount(conversionResult.getDomesticAmount());
         expense.setAmount(amount);
@@ -80,7 +80,8 @@ public class ExpensesController {
     @RequestMapping(value = "/calculator", method = RequestMethod.POST)
     public Money calculate(@Valid @RequestBody CalculatorDTO command) {
         final Money amount = new Money(command.getAmount(), command.getCurrencyCode());
-        final ConversionResult conversionResult = exchangeRatesManager.convertToDomesticAmount(amount, command.getDate());
+        final ConversionResult conversionResult = conversionManager
+                .convertToDomesticAmount(amount, command.getDate());
         return taxManager.calculateTaxAmount(conversionResult.getDomesticAmount());
     }
 

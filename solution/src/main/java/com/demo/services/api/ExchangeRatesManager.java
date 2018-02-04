@@ -1,4 +1,4 @@
-package com.demo.services;
+package com.demo.services.api;
 
 import com.demo.domain.ConversionResult;
 import com.demo.domain.ExchangeRates;
@@ -9,6 +9,6 @@ public interface ExchangeRatesManager {
 
     ExchangeRates findExchangeRates(Date date);
 
-    ConversionResult convertToDomesticAmount(Money amount, Date exchangeRateDate);
+    //ConversionResult convertToDomesticAmount(Money amount, Date exchangeRateDate);
 }
 

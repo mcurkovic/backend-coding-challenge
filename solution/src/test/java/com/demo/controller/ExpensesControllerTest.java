@@ -7,14 +7,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.demo.TestUtils;
 import com.demo.controller.dto.CalculatorDTO;
 import com.demo.controller.dto.ExpenseDTO;
 import com.demo.domain.ConversionResult;
 import com.demo.domain.ExchangeRates;
 import com.demo.domain.Money;
-import com.demo.services.ExchangeRatesManager;
-import com.demo.services.ExpensesManager;
-import com.demo.services.TaxManager;
+import com.demo.services.api.ConversionManager;
+import com.demo.services.api.ExchangeRatesManager;
+import com.demo.services.api.ExpensesManager;
+import com.demo.services.api.TaxManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -47,6 +49,9 @@ public class ExpensesControllerTest {
     private ExchangeRatesManager exchangeRatesManager;
 
     @MockBean
+    private ConversionManager conversionManager;
+
+    @MockBean
     private ExpensesManager expensesManager;
 
     @MockBean
@@ -56,9 +61,9 @@ public class ExpensesControllerTest {
 
     @Before
     public void setUp() {
-        final ExchangeRates mockExhangeRates = prepareMockExchangeRates();
-        given(this.exchangeRatesManager.findExchangeRates(any(Date.class))).willReturn(mockExhangeRates);
-        given(this.exchangeRatesManager.convertToDomesticAmount(any(Money.class), any(Date.class)))
+
+        given(this.exchangeRatesManager.findExchangeRates(any(Date.class))).willReturn(TestUtils.prepareMockExchangeRates());
+        given(this.conversionManager.convertToDomesticAmount(any(Money.class), any(Date.class)))
                 .willReturn(new ConversionResult());
     }
 
@@ -121,15 +126,15 @@ public class ExpensesControllerTest {
                 .andExpect(status);
     }
 
-    private ExchangeRates prepareMockExchangeRates() {
-        final ExchangeRates mockExhangeRates = new ExchangeRates();
-        mockExhangeRates.setBase("GBP");
-        mockExhangeRates.setDate(new Date());
-        HashMap<String, BigDecimal> rates = new HashMap<>();
-        rates.put("EUR", new BigDecimal("1.1373"));
-        mockExhangeRates.setRates(rates);
-        return mockExhangeRates;
-    }
+//    private ExchangeRates prepareMockExchangeRates() {
+//        final ExchangeRates mockExhangeRates = new ExchangeRates();
+//        mockExhangeRates.setBase("GBP");
+//        mockExhangeRates.setDate(new Date());
+//        HashMap<String, BigDecimal> rates = new HashMap<>();
+//        rates.put("EUR", new BigDecimal("1.1373"));
+//        mockExhangeRates.setRates(rates);
+//        return mockExhangeRates;
+//    }
 
 
 }

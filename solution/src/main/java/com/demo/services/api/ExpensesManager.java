@@ -1,4 +1,4 @@
-package com.demo.services;
+package com.demo.services.api;
 
 import com.demo.domain.Expense;
 import com.demo.domain.Money;

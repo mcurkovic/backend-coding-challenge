@@ -6,6 +6,7 @@
 
 	<h3>Add an expense</h3>
 	<form name="expensesform">
+		<span style="color:red" ng-show="expensesform.date.$touched && generalError !== null">{{generalError}}</span>
 		<ul>
 			<li>
 				<label>Date</label>

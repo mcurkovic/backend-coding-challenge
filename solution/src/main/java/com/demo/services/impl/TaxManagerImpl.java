@@ -1,6 +1,7 @@
-package com.demo.services;
+package com.demo.services.impl;
 
 import com.demo.domain.Money;
+import com.demo.services.api.TaxManager;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

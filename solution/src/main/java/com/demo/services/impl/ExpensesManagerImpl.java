@@ -1,16 +1,12 @@
-package com.demo.services;
+package com.demo.services.impl;
 
 import com.demo.dao.ExpensesRepository;
-import com.demo.domain.ExchangeRates;
 import com.demo.domain.Expense;
-import com.demo.domain.Money;
-import java.math.BigDecimal;
+import com.demo.services.api.ExchangeRatesManager;
+import com.demo.services.api.ExpensesManager;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,17 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ExpensesManagerImpl implements ExpensesManager {
 
-    @Value("${defaultCurrencyCode}")
-    private String defaultCurrencyCode;
-
-    @Value("${taxRatePercent}")
-    private String taxRatePercent;
+    @Autowired
+    private final ExpensesRepository expensesRepository;
 
     @Autowired
-    private ExpensesRepository expensesRepository;
+    private final ExchangeRatesManager exchangeRatesManager;
 
     @Autowired
-    private ExchangeRatesManager exchangeRatesManager;
+    public ExpensesManagerImpl(final ExpensesRepository expensesRepository,
+            final ExchangeRatesManager exchangeRatesManager)
+    {
+        this.expensesRepository = expensesRepository;
+        this.exchangeRatesManager = exchangeRatesManager;
+    }
 
     @Override
     public List<Expense> findExpenses() {

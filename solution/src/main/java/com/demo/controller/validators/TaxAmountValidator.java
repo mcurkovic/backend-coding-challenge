@@ -3,8 +3,9 @@ package com.demo.controller.validators;
 import com.demo.controller.dto.ExpenseDTO;
 import com.demo.domain.ConversionResult;
 import com.demo.domain.Money;
-import com.demo.services.ExchangeRatesManager;
-import com.demo.services.TaxManager;
+import com.demo.services.api.ConversionManager;
+import com.demo.services.api.ExchangeRatesManager;
+import com.demo.services.api.TaxManager;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,12 @@ public class TaxAmountValidator implements ConstraintValidator<TaxAmount, Expens
 
     private final TaxManager taxManager;
 
-    private final ExchangeRatesManager exchangeRatesManager;
+    private final ConversionManager conversionManager;
 
     @Autowired
-    public TaxAmountValidator(TaxManager taxManager, ExchangeRatesManager exchangeRatesManager) {
+    public TaxAmountValidator(TaxManager taxManager, ConversionManager conversionManager) {
         this.taxManager = taxManager;
-        this.exchangeRatesManager = exchangeRatesManager;
+        this.conversionManager = conversionManager;
     }
 
     @Override
@@ -29,7 +30,7 @@ public class TaxAmountValidator implements ConstraintValidator<TaxAmount, Expens
     @Override
     public boolean isValid(ExpenseDTO value, ConstraintValidatorContext context) {
         final Money amount = new Money(value.getAmount(), value.getCurrencyCode());
-        final ConversionResult conversionResult = exchangeRatesManager.convertToDomesticAmount(amount, value.getDate());
+        final ConversionResult conversionResult = conversionManager.convertToDomesticAmount(amount, value.getDate());
         final Money calculateTaxAmount = taxManager.calculateTaxAmount(conversionResult.getDomesticAmount());
         return value.getTaxAmount().compareTo(calculateTaxAmount.getAmount()) == 0;
     }
