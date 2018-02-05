@@ -3,9 +3,9 @@ package com.demo.controller;
 
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.demo.TestUtils;
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
-import org.apache.commons.lang3.time.FastDateFormat;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,8 +64,19 @@ public class ExpensesControllerTest {
     @Before
     public void setUp() {
 
-        given(this.exchangeRatesManager.findExchangeRates(any(Date.class))).willReturn(TestUtils.prepareMockExchangeRates());
+        given(this.exchangeRatesManager.findExchangeRates(any(Date.class)))
+                .willReturn(TestUtils.prepareMockExchangeRates());
+        given(this.taxManager.calculateTaxAmount(any(Money.class)))
+                .willReturn(new Money(new BigDecimal("100"), "GBP"));
+        final Expense mockeExpense = prepareMockExpense();
+        given(this.expensesManager.findExpenses()).willReturn(Arrays.asList(mockeExpense));
+        given(this.conversionManager.convertToDomesticAmount(any(Money.class), any(Date.class)))
+                .willReturn(new ConversionResult());
+    }
+
+    private Expense prepareMockExpense() {
         Expense mockeExpense = new Expense();
+        mockeExpense.setId(Long.valueOf(1));
         mockeExpense.setUserId(Long.valueOf(1));
         mockeExpense.setAmount(new Money(new BigDecimal("1.00"), ",GBP"));
         mockeExpense.setExchangeRateDate(new Date());
@@ -75,9 +86,7 @@ public class ExpensesControllerTest {
         mockeExpense.setReason("test reason");
         mockeExpense.setExpenseDate(new Date());
         mockeExpense.setDomesticAmount(new Money(new BigDecimal("1.00"), ",GBP"));
-        given(this.expensesManager.findExpenses()).willReturn(Arrays.asList(mockeExpense));
-        given(this.conversionManager.convertToDomesticAmount(any(Money.class), any(Date.class)))
-                .willReturn(new ConversionResult());
+        return mockeExpense;
     }
 
     @Test
@@ -109,7 +118,9 @@ public class ExpensesControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(BASIC_AUTH_KEY, BASIC_AUTH_VALUE))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", Matchers.is(1)))
+                .andExpect(jsonPath("$[0].taxAmount", Matchers.is(1.00)));
     }
 
     @Test
@@ -125,7 +136,9 @@ public class ExpensesControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .header(BASIC_AUTH_KEY, BASIC_AUTH_VALUE)
                         .content(objectMapper.writeValueAsString(command)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.amount", Matchers.is(100)))
+                .andExpect(jsonPath("$.currency", Matchers.is("GBP")));
     }
 
     private void postObject(ExpenseDTO command, ResultMatcher status) throws Exception {
