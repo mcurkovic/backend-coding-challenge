@@ -23,6 +23,7 @@ Technology stack used:
     - OkHttpClient
 - Liquibase - database migration tool
 - Spring Data JPA
+- Orika mapper - mapping DTO to entity classses
 - fixer.io service for fetching exchange rates
 
 Gradle as build tool is chosen just so solution can be run without any additional installation, just running gradlew.sh script.
