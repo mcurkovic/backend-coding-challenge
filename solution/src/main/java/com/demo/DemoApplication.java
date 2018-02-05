@@ -37,6 +37,7 @@ public class DemoApplication {
         };
     }
 
+    //http client used by retrofit2
     @Bean
     public OkHttpClient okHttpClient() {
         OkHttpClient client = new OkHttpClient();

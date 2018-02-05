@@ -9,6 +9,5 @@ public interface ExchangeRatesManager {
 
     ExchangeRates findExchangeRates(Date date);
 
-    //ConversionResult convertToDomesticAmount(Money amount, Date exchangeRateDate);
 }
 

@@ -31,10 +31,6 @@ public class ExpensesManagerImpl implements ExpensesManager {
     @Override
     public Iterable<Expense> findExpenses() {
         return expensesRepository.findAll();
-//        final Iterable<Expense> all = expensesRepository.findAll();
-//        final List<Expense> expenses = new ArrayList<>();
-//        all.forEach(expenses::add);
-//        return expenses;
     }
 
     @Transactional

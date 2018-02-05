@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+
+/**
+ * Error handling advice - intercepts all controllers and wraps all Exceptions into appropriate abstractions
+ */
 @ControllerAdvice("com.demo.controller")
 public class RestErrorHandler {
     public final static Logger logger = LoggerFactory.getLogger(RestErrorHandler.class);
