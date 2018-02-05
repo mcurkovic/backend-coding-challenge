@@ -30,7 +30,7 @@
 			</li>
 			<li>
 				<label>Reason</label>
-					<textarea at-auto-resize ng-required="true" ng-model="newExpense.reason" ng-trim="false" placeholder="why oh why?" ng-maxlength="300"></textarea>
+					<textarea maxlength="300" at-auto-resize ng-required="true" ng-model="newExpense.reason" ng-trim="false" placeholder="why oh why?" ng-maxlength="300"></textarea>
 			</li>
 			<li>
 				<label></label>
@@ -48,11 +48,11 @@
 			<div class="col-15">Reason</div>
 		</div>
 		<div ng-repeat="expense in expenses" class="body-row">
-			<div class="col-4">{{expense.expenseDate | date:'dd MMM yyyy'}}</div>
+			<div class="col-4">{{expense.displayDate | date:'dd MMM yyyy'}}</div>
 			<!-- <div class="col-4 figures">{{expense.amount | currency:"&pound;"}}</div> -->
-			<div class="col-4 figures">{{expense.amount.amount + ' ' + expense.amount.currency}}</div>
+			<div class="col-4 figures">{{expense.amount + ' ' + expense.currencyCode}}</div>
 			<!-- <div class="col-2 figures">{{expense.vat | currency:"&pound;"}}</div> -->
-			<div class="col-2 figures">{{expense.taxAmount.amount}}</div>
+			<div class="col-2 figures">{{expense.taxAmount}}</div>
 			<div class="col-15">{{expense.reason}}</div>
 		</div>
 	</div>

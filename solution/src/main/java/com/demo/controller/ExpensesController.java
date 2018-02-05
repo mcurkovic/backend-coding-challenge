@@ -8,8 +8,10 @@ import com.demo.domain.Money;
 import com.demo.services.api.ConversionManager;
 import com.demo.services.api.ExpensesManager;
 import com.demo.services.api.TaxManager;
+import java.util.List;
 import javax.validation.Valid;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,9 +28,10 @@ public class ExpensesController {
     private final ConversionManager conversionManager;
 
     //orika mapper used for mapping DTO to Entity and vice versa.
-    //For mappers injection see @com.demo.utils.SpringConfigurableMapper
+    //For mappers injection see @com.demo.SpringConfigurableMapper
     private final MapperFacade mapperFacade;
 
+    @Autowired
     public ExpensesController(ExpensesManager expensesManager, TaxManager taxManager,
             ConversionManager conversionManager, MapperFacade mapperFacade) {
         this.expensesManager = expensesManager;
@@ -39,16 +42,23 @@ public class ExpensesController {
 
     @RequestMapping(value = "/expenses", method = RequestMethod.POST)
     public ExpenseDTO saveExpense(@Valid @RequestBody ExpenseDTO command) {
+        //map DTO object to Entity
         final Expense expense = mapperFacade.map(command, Expense.class);
+        //save Entity object
         final Expense savedExpense = expensesManager.saveExpense(expense);
+
+        //map entity back to DTO
         final ExpenseDTO populatedDTO = mapperFacade.map(savedExpense, ExpenseDTO.class);
-        return command;
+
+        //return DTO
+        return populatedDTO;
     }
 
 
     @RequestMapping(value = "/expenses", method = RequestMethod.GET)
-    public Iterable<Expense> findExpenses() {
-        return expensesManager.findExpenses();
+    public List<ExpenseDTO> findExpenses() {
+        final List<ExpenseDTO> expenseDTOS = mapperFacade.mapAsList(expensesManager.findExpenses(), ExpenseDTO.class);
+        return expenseDTOS;
     }
 
     @RequestMapping(value = "/calculator", method = RequestMethod.POST)

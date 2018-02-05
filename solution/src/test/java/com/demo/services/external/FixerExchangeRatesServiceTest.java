@@ -1,9 +1,8 @@
-package com.demo.services.exteral;
+package com.demo.services.external;
 
 import static org.junit.Assert.assertNotNull;
 
 import com.demo.domain.ExchangeRates;
-import com.demo.services.external.FixerExchangeRatesService;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import retrofit2.Call;

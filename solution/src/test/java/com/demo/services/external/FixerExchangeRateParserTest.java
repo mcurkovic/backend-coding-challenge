@@ -1,10 +1,9 @@
-package com.demo.services.exteral;
+package com.demo.services.external;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.demo.domain.ExchangeRates;
-import com.demo.services.external.FixerExchangeRateParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.text.ParseException;

@@ -1,4 +1,4 @@
-package com.demo.controller.convertes;
+package com.demo.controller.mappers;
 
 import com.demo.controller.dto.ExpenseDTO;
 import com.demo.domain.ConversionResult;
@@ -13,7 +13,9 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ExpenseMapper extends CustomMapper<ExpenseDTO, Expense> {
     private final BigDecimal taxRatePercent;
 
@@ -49,7 +51,6 @@ public class ExpenseMapper extends CustomMapper<ExpenseDTO, Expense> {
         final Money amount = new Money(expenseDTO.getAmount(), expenseDTO.getCurrencyCode());
         final ConversionResult conversionResult = conversionManager.convertToDomesticAmount(amount, expenseDTO.getDate());
         final Money taxAmount = taxManager.calculateTaxAmount(conversionResult.getDomesticAmount());
-        //final Expense expense = new Expense();
         expense.setDomesticAmount(conversionResult.getDomesticAmount());
         expense.setAmount(amount);
         expense.setTaxAmount(taxAmount);
@@ -59,13 +60,15 @@ public class ExpenseMapper extends CustomMapper<ExpenseDTO, Expense> {
         expense.setExchangeRate(conversionResult.getRate());
         expense.setExchangeRateDate(expenseDTO.getDate());
         expense.setUserId(Long.valueOf(1));
-
+        expense.setId(expenseDTO.getId());
     }
 
     @Override
     public void mapBtoA(Expense expense, ExpenseDTO expenseDTO, MappingContext context) {
+        expenseDTO.setId(expense.getId());
         expenseDTO.setCurrencyCode(expense.getAmount().getCurrency());
         expenseDTO.setDate(expense.getExpenseDate());
+        expenseDTO.setDisplayDate(expenseDTO.getDate());
         expenseDTO.setReason(expense.getReason());
         expenseDTO.setAmount(expense.getAmount().getAmount());
         expenseDTO.setTaxAmount(expense.getTaxAmount().getAmount());

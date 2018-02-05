@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 public class ExpenseDTO {
+    private Long id;
 
     @NotNull
     @MinExpenseAmount
@@ -30,6 +31,9 @@ public class ExpenseDTO {
     @JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
     @ExpenseDate
     private Date date;
+
+    //unformatted date for display purposes (e.g. in expenses list)
+    private Date displayDate;
 
 
     public BigDecimal getAmount() {
@@ -79,5 +83,21 @@ public class ExpenseDTO {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Date getDisplayDate() {
+        return displayDate;
+    }
+
+    public void setDisplayDate(Date displayDate) {
+        this.displayDate = displayDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

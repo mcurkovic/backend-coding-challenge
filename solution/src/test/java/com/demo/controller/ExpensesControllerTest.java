@@ -3,6 +3,7 @@ package com.demo.controller;
 
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,6 +12,7 @@ import com.demo.TestUtils;
 import com.demo.controller.dto.CalculatorDTO;
 import com.demo.controller.dto.ExpenseDTO;
 import com.demo.domain.ConversionResult;
+import com.demo.domain.Expense;
 import com.demo.domain.Money;
 import com.demo.services.api.ConversionManager;
 import com.demo.services.api.ExchangeRatesManager;
@@ -18,13 +20,15 @@ import com.demo.services.api.ExpensesManager;
 import com.demo.services.api.TaxManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -32,7 +36,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ExpensesController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+//@WebMvcTest(ExpensesController.class)
 public class ExpensesControllerTest {
 
     private static final String BASIC_AUTH_VALUE = "Basic dXNlcjpwYXNzd29yZA==";
@@ -55,12 +61,21 @@ public class ExpensesControllerTest {
     @MockBean
     private TaxManager taxManager;
 
-    private FastDateFormat sdf = FastDateFormat.getInstance("dd/MM/yyyy");
-
     @Before
     public void setUp() {
 
         given(this.exchangeRatesManager.findExchangeRates(any(Date.class))).willReturn(TestUtils.prepareMockExchangeRates());
+        Expense mockeExpense = new Expense();
+        mockeExpense.setUserId(Long.valueOf(1));
+        mockeExpense.setAmount(new Money(new BigDecimal("1.00"), ",GBP"));
+        mockeExpense.setExchangeRateDate(new Date());
+        mockeExpense.setExchangeRate(new BigDecimal("1.3245"));
+        mockeExpense.setTaxAmount(new Money(new BigDecimal("1.00"), ",GBP"));
+        mockeExpense.setTaxRate(new BigDecimal("20.00"));
+        mockeExpense.setReason("test reason");
+        mockeExpense.setExpenseDate(new Date());
+        mockeExpense.setDomesticAmount(new Money(new BigDecimal("1.00"), ",GBP"));
+        given(this.expensesManager.findExpenses()).willReturn(Arrays.asList(mockeExpense));
         given(this.conversionManager.convertToDomesticAmount(any(Money.class), any(Date.class)))
                 .willReturn(new ConversionResult());
     }
@@ -123,16 +138,4 @@ public class ExpensesControllerTest {
                         .content(objectMapper.writeValueAsString(command)))
                 .andExpect(status);
     }
-
-//    private ExchangeRates prepareMockExchangeRates() {
-//        final ExchangeRates mockExhangeRates = new ExchangeRates();
-//        mockExhangeRates.setBase("GBP");
-//        mockExhangeRates.setDate(new Date());
-//        HashMap<String, BigDecimal> rates = new HashMap<>();
-//        rates.put("EUR", new BigDecimal("1.1373"));
-//        mockExhangeRates.setRates(rates);
-//        return mockExhangeRates;
-//    }
-
-
 }
