@@ -33,6 +33,7 @@ dependencies {
     compile('com.squareup.retrofit2:retrofit:2.3.0')
     compile('org.apache.commons:commons-lang3:3.7')
     compile('com.squareup.retrofit2:converter-jackson:2.3.0')
+    compile('ma.glasnost.orika:orika-core:1.5.2')
 
     runtime('mysql:mysql-connector-java')
 
